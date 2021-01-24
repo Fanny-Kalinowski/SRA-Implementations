@@ -20,8 +20,10 @@ public class SRASecondImplementation implements SRAImplementation {
     /*
     Permet de calculer le modulo inverse utilisé pour calculer la clé de déchiffrement
     Utilise l'algorithme d'Euclide etendu, en assumant que gcd et b sont premiers
+    En complixité log(n)
+    Objectif, trouver a et b tel que ax + by = gcd(a, b)
      */
-    private int moduloInverseWithEuclide(int gcd, int b) {
+    private int moduloInverseWithEuclide(int a, int b) {
 
         int retenue = b;
         int y = 0, finalModulo = 1;
@@ -29,13 +31,13 @@ public class SRASecondImplementation implements SRAImplementation {
         if (retenue == 1)
             return 0;
 
-        while (gcd > 1) {
-            int quotient = gcd / retenue;
+        while (a > 1) {
+            int quotient = a / retenue;
             int retenueTmp = retenue;
             // On applique l'algorithme d'Euclide
-            retenue = gcd % retenue;
+            retenue = a % retenue;
             //On swap les variables
-            gcd = retenueTmp;
+            a = retenueTmp;
             retenueTmp = y;
             // On remet le bon finalModulo et y
             y = finalModulo - quotient * y;
