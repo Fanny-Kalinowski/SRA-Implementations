@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class SRASecondImplementation implements SRAImplementation {
 
-    private static final int primeNumber = 100012421;
+    private static final int primeNumber = 2129;
 
     private final int encryptionKey;
     private final int decryptionKey;
@@ -17,42 +17,45 @@ public class SRASecondImplementation implements SRAImplementation {
         this.decryptionKey = moduloInverseWithEuclide(encryptionKey, primeNumber - 1);
     }
 
-    //TODO: comprendre ça, faire variante bruteforce et autre, et refactor ça
-    private int moduloInverseWithEuclide(int a, int m) {
+    /*
+    Permet de calculer le modulo inverse utilisé pour calculer la clé de déchiffrement
+    Utilise l'algorithme d'Euclide etendu, en assumant que gcd et b sont premiers
+     */
+    private int moduloInverseWithEuclide(int gcd, int b) {
 
-        int m0 = m;
-        int y = 0, x = 1;
+        int retenue = b;
+        int y = 0, finalModulo = 1;
 
-        if (m == 1)
+        if (retenue == 1)
             return 0;
 
-        while (a > 1) {
-            // q is quotient
-            int q = a / m;
-            int t = m;
-            // m is remainder now, process
-            // same as Euclid's algo
-            m = a % m;
-            a = t;
-            t = y;
-            // Update x and y
-            y = x - q * y;
-            x = t;
+        while (gcd > 1) {
+            int quotient = gcd / retenue;
+            int retenueTmp = retenue;
+            // On applique l'algorithme d'Euclide
+            retenue = gcd % retenue;
+            //On swap les variables
+            gcd = retenueTmp;
+            retenueTmp = y;
+            // On remet le bon finalModulo et y
+            y = finalModulo - quotient * y;
+            finalModulo = retenueTmp;
         }
-        // Make x positive
-        if (x < 0)
-            x += m0;
 
-        return x;
+        if (finalModulo < 0)
+            finalModulo += b;
+
+        return finalModulo;
     }
 
     private int getEncryptionKeys() {
-        int phiP = this.primeNumber - 1;
-        int k = new Random().nextInt();
-        while (Utils.GCD(phiP, k) != 1) {
-            k = new Random().nextInt();
+        int phi = primeNumber - 1;
+        int x = new Random().nextInt(500);
+
+        while (Utils.GCD(phi, x) != 1) {
+            x = new Random().nextInt(500);
         }
-        return k;
+        return x;
     }
 
     /*
@@ -63,14 +66,14 @@ public class SRASecondImplementation implements SRAImplementation {
         ==> Sinon -> x * puissance(x², (n-1) / 2))
      On calcule des modulos intermediaire afin de préserver la mémoire de très grands nombres
     */
-    private long moduloPow(long x, long exponent) {
+    public static long moduloPow(long x, long exponent) {
         long result = 1;
         while (exponent > 0) {
             if ((exponent & 1) > 0) {
-                result = (result * x) % this.primeNumber;
+                result = (result * x) % primeNumber;
             }
             exponent >>= 1;
-            x = (x * x) % this.primeNumber;
+            x = (x * x) % primeNumber;
         }
         return result;
     }

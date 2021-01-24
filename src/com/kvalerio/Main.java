@@ -1,6 +1,10 @@
 package com.kvalerio;
 
+import com.kvalerio.implementation.first.SRAFirstImplementation;
 import com.kvalerio.implementation.second.SRASecondImplementation;
+import com.kvalerio.implementation.third.SRAThirdImplementation;
+
+import java.util.Random;
 
 public class Main {
 
@@ -13,12 +17,35 @@ public class Main {
     */
 
     public static void main(String[] args) {
+//        testFirstImplementation();
+//        testSecondImplementation();
+        testThirdImplementation();
+    }
 
-        SRASecondImplementation keyPair = new SRASecondImplementation();
-        long encrypt = keyPair.encrypt(3443);
-        System.out.println("Encryption result of 3443 is " + encrypt);
-        System.out.println("Decryption result of " + encrypt + " is " + keyPair.decrypt(encrypt));
+    private static void testFirstImplementation() {
+        System.out.println("\n======= Testing FIRST implementation ========");
+        SRAFirstImplementation SRA = new SRAFirstImplementation();
+        int toEncrypt = new Random().nextInt(500);
+        long encrypt = SRA.encrypt(toEncrypt);
+        System.out.println("Encryption result of " + toEncrypt + " is " + encrypt);
+        System.out.println("Decryption result of " + encrypt + " is " + SRA.decrypt(encrypt) + "\n");
+    }
 
+    private static void testSecondImplementation() {
+        System.out.println("\n======= Testing SECOND implementation ========");
+        SRASecondImplementation SRA = new SRASecondImplementation();
+        int toEncrypt = new Random().nextInt(500);
+        long encrypt = SRA.encrypt(toEncrypt);
+        System.out.println("Encryption result of " + toEncrypt + " is " + encrypt);
+        System.out.println("Decryption result of " + encrypt + " is " + SRA.decrypt(encrypt) + "\n");
+    }
 
+    private static void testThirdImplementation() {
+        System.out.println("\n======= Testing THIRD implementation ========");
+        SRAThirdImplementation SRA = new SRAThirdImplementation();
+        int toEncrypt = new Random().nextInt(500);
+        long encrypt = SRA.encrypt(toEncrypt);
+        System.out.println("Encryption result of " + toEncrypt + " is " + encrypt);
+        System.out.println("Decryption result of " + encrypt + " is " + SRA.decrypt(encrypt) + "\n");
     }
 }

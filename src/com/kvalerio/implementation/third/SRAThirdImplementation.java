@@ -1,33 +1,30 @@
-package com.kvalerio.implementation.first;
+package com.kvalerio.implementation.third;
 
 import com.kvalerio.Utils;
 
 import java.util.Random;
 
-public class SRAFirstImplementation {
+public class SRAThirdImplementation {
 
     private static final int primeNumber = 2129;
     private final int encryptionKey;
     private final int decryptionKey;
 
-    public SRAFirstImplementation() {
+    public SRAThirdImplementation() {
         this.encryptionKey = getEncryptionKeys();
-        this.decryptionKey = moduloInverseBruteforce(encryptionKey, primeNumber - 1);
+        this.decryptionKey = moduloInverseWithFermat(encryptionKey, primeNumber - 1);
     }
+
 
     /*
     Permet de calculer le modulo inverse utilisé pour calculer la clé de déchiffrement
-    Utilise une simple méthode de bruteforce
-    On essaye de trouver quel est le result qui fait que a*result % mod vaut 1
+    Utilise le petit théorème de Fermat : si p est premier, alors a^p-a est un multiple de p
+    Soit a^p congrue a mod p
      */
-    private int moduloInverseBruteforce(int a, int mod) {
-        a %= mod;
-        int result = 1;
-        for (; result < mod; result++) {
-            if ((a * result) % mod == 1)
-                break;
-        }
-        return result;
+    private int moduloInverseWithFermat(int a, int m) {
+        long value = moduloPow(a, m - 2, m);
+        return Math.toIntExact(value);
+
     }
 
     private int getEncryptionKeys() {
@@ -48,23 +45,23 @@ public class SRAFirstImplementation {
         ==> Sinon -> x * puissance(x², (n-1) / 2))
      On calcule des modulos intermediaire afin de préserver la mémoire de très grands nombres
     */
-    private long moduloPow(long x, long exponent) {
+    private long moduloPow(long x, long exponent, long prime) {
         long result = 1;
         while (exponent > 0) {
             if ((exponent & 1) > 0) {
-                result = (result * x) % primeNumber;
+                result = (result * x) % prime;
             }
             exponent >>= 1;
-            x = (x * x) % primeNumber;
+            x = (x * x) % prime;
         }
         return result;
     }
 
     public long encrypt(long message) {
-        return moduloPow(message, encryptionKey);
+        return moduloPow(message, encryptionKey, primeNumber);
     }
 
     public long decrypt(long cypher) {
-        return moduloPow(cypher, decryptionKey);
+        return moduloPow(cypher, decryptionKey, primeNumber);
     }
 }
